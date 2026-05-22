@@ -1,0 +1,15 @@
+#!/home/justin/tools/fossil/figures/.venv/bin/python
+import sys
+from fossil_figures import apply_style, load_stdin, ranked_cdf
+
+apply_style(column="single")
+data = load_stdin()
+fig = ranked_cdf(
+    data,
+    metric="ranked_counts",
+    xlabel="Unique stub bodies (ranked by frequency)",
+    ylabel="Fraction of total attaches",
+    thresholds=[0.9],
+    log_x=True,
+)
+fig.savefig(sys.argv[1])

@@ -17,7 +17,7 @@ class Command(Enum):
     RUN = "run"
     SYMLINK = "symlink"
 
-MOZ_CONFIG_DIR = Path("../mozconfigs")
+MOZ_CONFIG_DIR = Path("../frostmonkey/mozconfigs")
 
 class Build(Enum):
     # each option corresponds to mozconfig file name and

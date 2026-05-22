@@ -1,0 +1,24 @@
+name = "startup"
+description = "Cold-start process timing via hyperfine: --baseline-eager AOT delta"
+default_iterations = 1
+allow_failure = false
+
+[analyze]
+startup = "analyses/parse_hyperfine.py"
+
+[variables]
+HF = "hyperfine --warmup 3 --runs 15 --export-json /tmp/fossil-hf-$$.json"
+HF_COLD = "hyperfine --warmup 3 --runs 50 --export-json /tmp/fossil-hf-$$.json"
+PRE = "cd @OCTANE_DIR &&"
+POST = "1>&2 && cat /tmp/fossil-hf-$$.json && rm -f /tmp/fossil-hf-$$.json"
+EAGER = "--blinterp-eager"
+
+[variants]
+release = "$HF '$PRE @RELEASE_SHELL $EAGER -f run.js' $POST"
+aot-eager = "$HF '$PRE @JSSHELL --blinterp-eager @aot-interp-sh-ics -f run.js' $POST"
+cold-release = "$HF_COLD '@RELEASE_SHELL --blinterp-eager -f @OCTANE_DIR/test.js' $POST"
+cold-aot = "$HF_COLD '@JSSHELL --blinterp-eager @aot-interp-sh-ics -f @OCTANE_DIR/test.js' $POST"
+
+[figures.bar-chart]
+analysis = "startup"
+script = "figures/bar_chart.py"

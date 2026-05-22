@@ -1,0 +1,17 @@
+name = "monomorphic-harvest"
+description = "Monomorphic IC harvest ratios from AOT warmup across benchmarks"
+default_iterations = 1
+allow_failure = false
+
+[analyze]
+harvest = "analyses/harvest.py"
+
+[variables]
+WARMUP_FLAGS = "--dump-bl-self-hosted --dump-bl-interp --dump-aot-ics"
+TESTS = "@FIREFOX/../tests"
+SPEW = "IONFLAGS=bl-aot"
+
+[variants]
+octane = "cd @OCTANE_DIR && $SPEW @JSSHELL $WARMUP_FLAGS --aot-warmup @OCTANE_DIR/run.js -e 'quit(0)'"
+pgo-builtins = "$SPEW @JSSHELL $WARMUP_FLAGS --aot-warmup $TESTS/pgo-builtins.js -e 'quit(0)'"
+sunspider = "for f in @SUNSPIDER_DIR/*.js; do case $f in *driver*) continue;; esac; $SPEW @JSSHELL $WARMUP_FLAGS --aot-warmup \"$f\" -e 'quit(0)'; done"

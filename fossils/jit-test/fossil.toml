@@ -1,0 +1,10 @@
+name = "jit-test"
+description = "SpiderMonkey jit-test suite pass/fail regression tracking"
+default_iterations = 1
+allow_failure = true
+
+[analyze]
+jit-test = "analyses/parse_jit_test.py"
+
+[variants]
+aot-bl = "cd @FIREFOX/js/src && python3 ./jit-test/jit_test.py --args=--aot-bl @JSSHELL"

@@ -1,0 +1,23 @@
+name = "speedometer"
+description = "Speedometer 3 browser benchmark via Raptor (single iteration)"
+default_iterations = 3
+allow_failure = false
+[analyze]
+speedometer = "analyses/parse_speedometer.py"
+
+[variables]
+PRE = "cd @FIREFOX"
+RAPTOR = "-t speedometer3 --app firefox --browser-cycles 1 --page-cycles 1"
+RESULT = "cat testing/mozharness/build/raptor.json"
+
+[variants]
+release = "$PRE && @MC_RELEASE ./mach raptor $RAPTOR --binary @BIN_RELEASE 1>&2 && $RESULT"
+vm-only = "$PRE && @SANDBOX JIT_OPTION_disableJitBackend=true @MC_AOT ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-interp = "$PRE && @AOT_INTERP_ENV @NO_CACHEIR_ENV @MC_AOT ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-interp-ics = "$PRE && @AOT_INTERP_ENV @AOT_IC_ENV @MC_AOT ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-interp-sh = "$PRE && @AOT_INTERP_ENV JIT_OPTION_useAOTSelfHosted=true @NO_CACHEIR_ENV @MC_AOT ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-interp-sh-ics = "$PRE && @AOT_INTERP_ENV JIT_OPTION_useAOTSelfHosted=true @AOT_IC_ENV @MC_AOT ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+
+[figures.bar-chart]
+analysis = "speedometer"
+script = "figures/bar_chart.py"

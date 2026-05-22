@@ -1,0 +1,63 @@
+name = "ic-frequency"
+description = "IC stub distribution across benchmarks"
+default_iterations = 1
+allow_failure = false
+
+[analyze]
+frequency = "analyses/parse_ic_freq.py"
+pareto = "analyses/pareto.py"
+cdf = "analyses/cdf.py"
+stub-size = "analyses/stub_size.py"
+churn = "analyses/churn.py"
+timeline = "analyses/timeline.py"
+overlap = "analyses/overlap.py"
+jaccard = "analyses/jaccard.py"
+corpus-size = "analyses/corpus_size.py"
+
+[figures.corpus-size]
+analysis = "corpus-size"
+script = "figures/corpus_size.py"
+
+[figures.pareto-cdf]
+analysis = "cdf"
+script = "figures/pareto_cdf.py"
+
+[figures.stub-sizes]
+analysis = "stub-size"
+script = "figures/stub_sizes.py"
+
+[figures.overlap]
+analysis = "overlap"
+script = "figures/overlap.py"
+
+[figures.jaccard-heatmap]
+analysis = "jaccard"
+script = "figures/jaccard_heatmap.py"
+
+[figures.coverage-matrix]
+analysis = "jaccard"
+script = "figures/coverage_matrix.py"
+
+[figures.jaccard-combined]
+analysis = "jaccard"
+script = "figures/jaccard_combined.py"
+
+[variables]
+IC = "export JS_AOT_INSTR=ic && taskset -c 2"
+RAPTOR = "-t speedometer3 --app firefox --browser-cycles 1 --page-cycles 1"
+BT = "rm -f /tmp/fossil-ic.* && cd @FIREFOX && @SANDBOX JS_AOT_INSTR=ic JS_AOT_INSTR_FILE=/tmp/fossil-ic @MC_AOT ./mach browsertime --headless -n 1 -b firefox"
+BT_TAIL = "1>&2 && cat /tmp/fossil-ic.* >&2 && rm -f /tmp/fossil-ic.*"
+
+[variants]
+octane = "cd @OCTANE_DIR && $IC @JSSHELL -f run.js"
+sunspider = "for f in @SUNSPIDER_DIR/*.js; do case $f in *driver*) continue;; esac; $IC @JSSHELL -f \"$f\"; done"
+speedometer = "cd @FIREFOX && @SANDBOX JS_AOT_INSTR=ic JS_AOT_INSTR_FILE=/tmp/fossil-ic @MC_AOT ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && cat /tmp/fossil-ic.* >&2 && rm -f /tmp/fossil-ic.* && cat testing/mozharness/build/raptor.json"
+reddit = "$BT https://www.reddit.com/r/technology/comments/9sqwyh/we_posed_as_100_senators_to_run_ads_on_facebook/ $BT_TAIL"
+wikipedia = "$BT https://en.wikipedia.org/wiki/Barack_Obama $BT_TAIL"
+youtube = "$BT https://www.youtube.com $BT_TAIL"
+amazon = "$BT https://www.amazon.com/s?k=laptop $BT_TAIL"
+imdb = "$BT https://www.imdb.com/title/tt0084967/ $BT_TAIL"
+bing = "$BT https://www.bing.com/search?q=javascript $BT_TAIL"
+fandom = "$BT https://marvel.fandom.com/wiki/Black_Panther $BT_TAIL"
+stackoverflow = "$BT https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-commits-in-git $BT_TAIL"
+example = "$BT https://example.com $BT_TAIL"

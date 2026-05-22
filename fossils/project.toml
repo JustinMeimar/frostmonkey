@@ -1,0 +1,35 @@
+name = "spidermonkey"
+description = "SpiderMonkey AOT benchmark configurations"
+
+[constants]
+
+# file and binaries
+FIREFOX = "/home/justin/spidermonkey/firefox"
+RELEASE_SHELL = "$FIREFOX/build-shell-release/dist/bin/js"
+JSSHELL = "$FIREFOX/build-shell-release-aot/dist/bin/js"
+JSSHELL_DBG = "$FIREFOX/build-shell-debug-aot/dist/bin/js"
+BIN_RELEASE = "$FIREFOX/build-browser-release/dist/bin/firefox"
+BIN_AOT = "$FIREFOX/build-browser-release-aot/dist/bin/firefox"
+
+# mozconfig paths
+MC_RELEASE = "MOZCONFIG=../mozconfigs/browser-release.mozconfig"
+MC_AOT = "MOZCONFIG=../mozconfigs/browser-release-aot.mozconfig"
+
+# benchmark paths
+OCTANE_DIR = "$FIREFOX/js/src/octane"
+SUNSPIDER_DIR = "$FIREFOX/third_party/webkit/PerformanceTests/SunSpider/sunspider-0.9.1"
+
+# env vars and jit options for browser
+SANDBOX = "MOZ_DISABLE_CONTENT_SANDBOX=1"
+AOT_SHELL_FLAGS = "--no-ion --no-baseline --blinterp-eager --no-asmjs"
+AOT_BROWSER_ENV = "JIT_OPTION_baselineInterpreterWarmUpThreshold=0 JIT_OPTION_baselineJit=false JIT_OPTION_ion=false"
+AOT_IC_ENV = "JIT_OPTION_enableAOTICs=true JIT_OPTION_enableAOTICEnforce=true"
+AOT_INTERP_ENV = "$SANDBOX $AOT_BROWSER_ENV JIT_OPTION_useAOTBaseline=true JIT_OPTION_useAOTInterp=true"
+NO_CACHEIR_ENV = "JIT_OPTION_disableCacheIR=true"
+
+[experiments]
+jitless = "--no-jit-backend"
+aot-interp = "--aot-interp --cache-ir-stubs=off"
+aot-interp-ics = "--aot-interp --enforce-aot-ics"
+aot-interp-sh = "--aot-interp --aot-selfhosted --cache-ir-stubs=off"
+aot-interp-sh-ics = "--aot-bl --enforce-aot-ics"

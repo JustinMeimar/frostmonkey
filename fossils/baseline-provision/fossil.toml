@@ -1,0 +1,18 @@
+name = "baseline-provision"
+description = "Per-process CPU cost of baseline tier provisioning: AOT load vs runtime generation"
+default_iterations = 2
+allow_failure = false
+
+[analyze]
+timing = "analyses/parse_timing.py"
+
+[variables]
+PRE = "export JS_AOT_INSTR=timing && cd @OCTANE_DIR && taskset -c 2 @JSSHELL"
+
+[variants]
+runtime-baseline = "$PRE @AOT_SHELL_FLAGS -f run.js"
+aot-full = "$PRE @AOT_SHELL_FLAGS @aot-interp-sh-ics -f run.js"
+
+[figures.table]
+analysis = "timing"
+script = "figures/table.py"

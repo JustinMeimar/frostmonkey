@@ -1,0 +1,40 @@
+name = "jit-lifecycle"
+description = "JIT code lifecycle: tier transitions and deallocation over time"
+default_iterations = 1
+allow_failure = false
+
+[analyze]
+summary = "analyses/summary.py"
+timeline = "analyses/timeline.py"
+tier-dist = "analyses/tier_dist.py"
+timeseries = "analyses/timeseries.py"
+
+[figures.summary-table]
+analysis = "summary"
+script = "figures/summary_table.py"
+
+[figures.summary-table-no-retention]
+analysis = "summary"
+script = "figures/summary_table_no_retention.py"
+
+[figures.timeseries-scatter]
+analysis = "timeseries"
+script = "figures/timeseries_scatter.py"
+
+[variables]
+BT = "rm -f /tmp/fossil-jl.* && cd @FIREFOX && @SANDBOX JS_AOT_INSTR=lifecycle,ic,blinterp JS_AOT_INSTR_FILE=/tmp/fossil-jl @MC_AOT ./mach browsertime --headless -n 1 -b firefox"
+BT_TAIL = "1>&2 && cat /tmp/fossil-jl.* >&2 && rm -f /tmp/fossil-jl.*"
+
+[variants]
+octane = "export JS_AOT_INSTR=lifecycle,ic,blinterp && cd @OCTANE_DIR && taskset -c 2 @JSSHELL -f run.js"
+octane-aot = "export JS_AOT_INSTR=lifecycle,ic,blinterp && cd @OCTANE_DIR && taskset -c 2 @JSSHELL --aot-bl --enforce-aot-ics --no-ion -f run.js"
+speedometer = "rm -f /tmp/fossil-jl.* && cd @FIREFOX && @SANDBOX JS_AOT_INSTR=lifecycle,ic,blinterp JS_AOT_INSTR_FILE=/tmp/fossil-jl @MC_AOT ./mach raptor -t speedometer3 --app firefox --browser-cycles 1 --page-cycles 1 --binary @BIN_AOT 1>&2 && cat /tmp/fossil-jl.* >&2 && rm -f /tmp/fossil-jl.* && cat testing/mozharness/build/raptor.json"
+speedometer-aot = "rm -f /tmp/fossil-jl.* && cd @FIREFOX && @SANDBOX JS_AOT_INSTR=lifecycle,ic,blinterp JS_AOT_INSTR_FILE=/tmp/fossil-jl @MC_AOT JIT_OPTION_useAOTBaseline=true JIT_OPTION_useAOTInterp=true JIT_OPTION_enableAOTICs=true JIT_OPTION_enableAOTICEnforce=true JIT_OPTION_ion=false ./mach raptor -t speedometer3 --app firefox --browser-cycles 1 --page-cycles 1 --binary @BIN_AOT 1>&2 && cat /tmp/fossil-jl.* >&2 && rm -f /tmp/fossil-jl.* && cat testing/mozharness/build/raptor.json"
+reddit = "$BT https://www.reddit.com/r/technology/comments/9sqwyh/we_posed_as_100_senators_to_run_ads_on_facebook/ $BT_TAIL"
+wikipedia = "$BT https://en.wikipedia.org/wiki/Barack_Obama $BT_TAIL"
+youtube = "$BT https://www.youtube.com $BT_TAIL"
+amazon = "$BT https://www.amazon.com/s?k=laptop $BT_TAIL"
+imdb = "$BT https://www.imdb.com/title/tt0084967/ $BT_TAIL"
+bing = "$BT https://www.bing.com/search?q=javascript $BT_TAIL"
+fandom = "$BT https://marvel.fandom.com/wiki/Black_Panther $BT_TAIL"
+stackoverflow = "$BT https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-commits-in-git $BT_TAIL"

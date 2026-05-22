@@ -1,0 +1,47 @@
+name = "worker-memory"
+description = "JIT code allocation scaling with N JSRuntimes: AOT vs runtime JIT"
+default_iterations = 1
+allow_failure = false
+
+[analyze]
+jit = "analyses/parse_jit_memory.py"
+
+[figures.jit-scaling]
+analysis = "jit"
+script = "figures/jit_scaling.py"
+
+[figures.jit-dot]
+analysis = "jit"
+script = "figures/jit_dot.py"
+
+[figures.jit-table]
+analysis = "jit"
+script = "figures/jit_table.py"
+
+[variables]
+INSTR = "JS_AOT_INSTR=lifecycle,ic"
+BENCH = "/home/justin/spidermonkey/tests/worker_realistic.js"
+AOT = "--aot-bl --enforce-aot-ics --no-ion"
+BASE = "--no-ion"
+
+[variants]
+n1 = "$INSTR @JSSHELL $BASE -f $BENCH -- 1"
+n1-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 1"
+
+n4 = "$INSTR @JSSHELL $BASE -f $BENCH -- 4"
+n4-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 4"
+
+n16 = "$INSTR @JSSHELL $BASE -f $BENCH -- 16"
+n16-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 16"
+
+n64 = "$INSTR @JSSHELL $BASE -f $BENCH -- 64"
+n64-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 64"
+
+n128 = "$INSTR @JSSHELL $BASE -f $BENCH -- 128"
+n128-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 128"
+
+n256 = "$INSTR @JSSHELL $BASE -f $BENCH -- 256"
+n256-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 256"
+
+n512 = "$INSTR @JSSHELL $BASE -f $BENCH -- 512"
+n512-aot = "$INSTR @JSSHELL $AOT -f $BENCH -- 512"

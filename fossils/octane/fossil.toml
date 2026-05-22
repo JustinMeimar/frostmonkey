@@ -1,0 +1,25 @@
+name = "octane"
+description = "Octane 2.0 steady-state JS throughput"
+default_iterations = 1
+[analyze]
+octane = "analyses/parse_octane.py"
+
+[variables]
+PRE = "cd @OCTANE_DIR && taskset -c 2 @JSSHELL"
+
+[variants]
+vm-only = "$PRE @jitless -f run.js"
+aot-interp = "$PRE @AOT_SHELL_FLAGS @aot-interp -f run.js"
+aot-interp-ics = "$PRE @AOT_SHELL_FLAGS @aot-interp-ics -f run.js"
+aot-interp-sh = "$PRE @AOT_SHELL_FLAGS @aot-interp-sh -f run.js"
+aot-interp-sh-ics = "$PRE @AOT_SHELL_FLAGS @aot-interp-sh-ics -f run.js"
+regular-jit = "$PRE -f run.js"
+regular-jit-aot = "$PRE --blinterp-eager --aot-interp --enforce-aot-ics -f run.js"
+
+[figures.bar-chart]
+analysis = "octane"
+script = "figures/bar_chart.py"
+
+[figures.violin]
+analysis = "octane"
+script = "figures/violin.py"
