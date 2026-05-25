@@ -93,7 +93,9 @@ get-rolling-diff:
 ##~---- Browser ----~##
 
 browser *FLAGS:
-    JIT_OPTION_useAOT=true \
+    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTSelfHosted=true \
+    JIT_OPTION_useAOTICs=true \
     {{FLAGS}} \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
     ./{{BROWSER_AOT}} --no-remote
