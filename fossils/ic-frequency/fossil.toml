@@ -22,6 +22,10 @@ script = "figures/corpus_size.py"
 analysis = "cdf"
 script = "figures/pareto_cdf.py"
 
+[figures.pareto-band]
+analysis = "cdf"
+script = "figures/pareto_band.py"
+
 [figures.stub-sizes]
 analysis = "stub-size"
 script = "figures/stub_sizes.py"
