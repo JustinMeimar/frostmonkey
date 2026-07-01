@@ -5,7 +5,7 @@ BROWSER_AOT := "build-browser-release-aot/dist/bin/firefox"
 BROWSER_DEBUG_AOT := "build-browser-debug-aot/dist/bin/firefox"
 IC_CORPI := "../frostmonkey/ic-corpi"
 PGO_DIR := "/tmp/frostmonkey-pgo"
-PGO_COVERAGE := "0.90"
+PGO_BUDGET := "65536"
 PGO_WORKLOAD := "js/src/octane/run.js"
 
 ##~---- Build / Bootstrap ----~##
@@ -48,7 +48,9 @@ collect-ics FILE:
     ./jsshell --aot --enforce-aot-ics -f {{FILE}}
 
 collect-ics-browser:
-    JIT_OPTION_useAOT=true \
+    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTSelfHosted=true \
+    JIT_OPTION_useAOTICs=true \
     JIT_OPTION_enforceAOTICs=true \
     AOT_ICS_LOG_UNSEEN=1 AOT_ICS_DIR=js/src/ics \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
@@ -85,7 +87,8 @@ clean-ics:
 ##~---- Diff ----~##
 
 view-rolling-diff:
-    git diff 8ded3583f3587f130f1af9 HEAD | delta --side-by-side
+    git diff 8ded3583f3587f130f1af9 | delta --side-by-side
+    #git diff 8ded3583f3587f130f1af9 HEAD | delta --side-by-side
 
 get-rolling-diff:
     git diff 8ded3583f358 HEAD
@@ -102,7 +105,9 @@ browser *FLAGS:
 
 gdb-browser:
     MOZ_CRASHREPORTER_DISABLE=1 \
-    JIT_OPTION_useAOT=true \
+    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTSelfHosted=true \
+    JIT_OPTION_useAOTICs=true \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
     gdb --args ./{{BROWSER_AOT}} --no-remote
 
@@ -111,7 +116,9 @@ debug-browser:
     echo "Content processes will pause at startup. Attach gdb with:"
     echo "  gdb -p <PID>"
     echo ""
-    JIT_OPTION_useAOT=true \
+    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTSelfHosted=true \
+    JIT_OPTION_useAOTICs=true \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
     MOZ_DEBUG_CHILD_PROCESS=1 \
     ./{{BROWSER_AOT}} --no-remote
@@ -150,28 +157,32 @@ pgo-profile WORKLOAD=PGO_WORKLOAD:
     mkdir -p {{PGO_DIR}}/dump
     rm -f {{PGO_DIR}}/dump/IC-*
     echo "Profiling: {{WORKLOAD}}"
-    JS_FM_PROFILE_ICS=1 \
-    JS_FM_PROFILE_DIR={{PGO_DIR}}/dump \
-    JS_AOT_INSTR=ic JS_AOT_INSTR_FILE={{PGO_DIR}}/ic-profile.log \
+    JS_AOT_INSTR=ic \
+    JS_AOT_INSTR_FILE={{PGO_DIR}}/ic-profile.log \
+    JS_AOT_PGO_DIR={{PGO_DIR}}/dump \
     taskset -c {{BENCH_CPU}} ./jsshell -f {{WORKLOAD}}
     stubs=$(find {{PGO_DIR}}/dump -name 'IC-*' | wc -l)
-    lines=$(wc -l < {{PGO_DIR}}/ic-profile.log)
+    lines=$(cat {{PGO_DIR}}/ic-profile.log.* 2>/dev/null | wc -l)
     echo "Dumped $stubs stub files, $lines ic events -> {{PGO_DIR}}"
 
-pgo-select COVERAGE=PGO_COVERAGE:
+pgo-select BUDGET=PGO_BUDGET:
+    #!/usr/bin/env bash
     python3 js/src/jit/SelectAOTCorpus.py \
-        --profile {{PGO_DIR}}/ic-profile.log \
+        --profiles {{PGO_DIR}}/ic-profile.log.* \
         --dump-dir {{PGO_DIR}}/dump \
         --output-dir js/src/ics \
-        --coverage {{COVERAGE}}
+        --budget {{BUDGET}}
+    # Redump the AOT container from js/src/ics/ into AOTBaseline.S so the
+    # next build picks up the new corpus + hints.
+    IONFLAGS=bl-aot ./jsshell --dump-bl-interp --dump-aot-ics --dump-bl-self-hosted -e 'quit(0)'
 
-pgo-full WORKLOAD=PGO_WORKLOAD COVERAGE=PGO_COVERAGE:
+pgo-full WORKLOAD=PGO_WORKLOAD BUDGET=PGO_BUDGET:
     #!/usr/bin/env bash
     echo "=== Phase 1: Profile collection ==="
     just pgo-profile {{WORKLOAD}}
     echo ""
-    echo "=== Phase 2: Corpus selection (T={{COVERAGE}}) ==="
-    just pgo-select {{COVERAGE}}
+    echo "=== Phase 2: Corpus selection + redump (B={{BUDGET}}) ==="
+    just pgo-select {{BUDGET}}
     echo ""
     echo "=== Phase 3: Rebuild ==="
     just build
