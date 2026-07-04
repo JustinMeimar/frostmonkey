@@ -45,7 +45,7 @@ class JSOptions(Enum):
         --portable-baseline --portable-baseline-eager"
     
     ENFORCE_AOT_PBL_JITLESS = \
-        "--no-jit-backend --enforce-aot-ics \
+        "--no-jit-backend --aot-ics-enforce \
         --portable-baseline --portable-baseline-eager"
     
     DEFAULT = ""
@@ -168,8 +168,8 @@ class CommandRunner:
         env = os.environ.copy()
         env["IONFLAGS"] = "bl-aot"
         result = subprocess.run(
-            [str(js), "--dump-bl-interp", "--dump-aot-ics",
-             "--dump-bl-self-hosted", "-e", "quit(0);"],
+            [str(js), "--aot-dump-baseline", "--aot-dump-ics",
+             "--aot-dump-self-hosted", "-e", "quit(0);"],
             env=env,
         )
         if result.returncode != 0:

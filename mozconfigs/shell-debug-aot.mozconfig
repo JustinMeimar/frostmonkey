@@ -12,8 +12,7 @@ ac_add_options --enable-build-backends=CompileDB,RecursiveMake
 ac_add_options --enable-explicit-resource-management
 ac_add_options --enable-jitspew
 
-ac_add_options --enable-aot-baseline
-ac_add_options --enable-aot-ics
+ac_add_options --enable-aot
 
 mk_add_options MOZ_PARALLEL_BUILD=12
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/build-shell-debug-aot
