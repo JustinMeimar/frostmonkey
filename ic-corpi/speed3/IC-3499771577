@@ -1,1 +1,1 @@
-Call, 1, 1, 3, JSVAL_TYPE_UNKNOWN, 0, , LASTUSED(4294967295) , OP(GuardFuse) REALMFUSE(14) OP(LoadBooleanResult) BOOL(1) OP(ReturnFromIC)  
+Call, 1, 1, 2, JSVAL_TYPE_UNKNOWN, 0, , LASTUSED(4294967295) , OP(GuardFuse) REALMFUSE(14) OP(LoadBooleanResult) BOOL(1)

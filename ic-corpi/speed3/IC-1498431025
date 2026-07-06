@@ -1,1 +1,1 @@
-BinaryArith, 2, 2, 4, JSVAL_TYPE_UNKNOWN, 8, STUBFIELD(JitCode) , LASTUSED(2) LASTUSED(2) , OP(GuardToString) ID(0) OP(GuardToString) ID(1) OP(ConcatStringsResult) ID(0) ID(1) OFFSET(0) OP(ReturnFromIC)  
+BinaryArith, 2, 2, 3, JSVAL_TYPE_UNKNOWN, 8, STUBFIELD(JitCode) , LASTUSED(2) LASTUSED(2) , OP(GuardToString) ID(0) OP(GuardToString) ID(1) OP(ConcatStringsResult) ID(0) ID(1) OFFSET(0)

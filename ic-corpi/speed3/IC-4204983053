@@ -1,1 +1,1 @@
-TypeOfEq, 1, 1, 3, JSVAL_TYPE_OBJECT, 0, , LASTUSED(1) , OP(GuardToObject) ID(0) OP(LoadTypeOfEqObjectResult) ID(0) TYPEOFEQOPERAND(132) OP(ReturnFromIC)  
+TypeOfEq, 1, 1, 2, JSVAL_TYPE_OBJECT, 0, , LASTUSED(1) , OP(GuardToObject) ID(0) OP(LoadTypeOfEqObjectResult) ID(0) TYPEOFEQOPERAND(132)

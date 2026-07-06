@@ -1,0 +1,32 @@
+name = "ic-hinting"
+description = "Speedometer 3 with vs without eager AOT IC hints. Assumes the browser is bootstrapped with Speedometer3-derived hints (see js/src/ics/AOTHints.tbl)."
+default_iterations = 5
+allow_failure = false
+
+[analyze]
+speedometer = "analyses/parse_speedometer.py"
+
+[variables]
+PRE = "cd @FIREFOX"
+RAPTOR = "-t speedometer3 --app firefox --browser-cycles 1 --page-cycles 4"
+RESULT = "cat testing/mozharness/build/raptor.json"
+MC = "MOZCONFIG=../frostmonkey/mozconfigs/browser-release-aot.mozconfig"
+AOT_FULL = "JIT_OPTION_useAOTInterp=true JIT_OPTION_useAOTSelfHosted=true JIT_OPTION_useAOTICs=true"
+BLINTERP_EAGER = "JIT_OPTION_baselineInterpreterWarmUpThreshold=0"
+
+[variants]
+hints-on = "$PRE && @SANDBOX $AOT_FULL $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+hints-off = "$PRE && @SANDBOX $AOT_FULL JIT_OPTION_useAOTICHints=false $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+hints-on-eager = "$PRE && @SANDBOX $AOT_FULL $BLINTERP_EAGER $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+hints-off-eager = "$PRE && @SANDBOX $AOT_FULL $BLINTERP_EAGER JIT_OPTION_useAOTICHints=false $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+
+aot-interp-only = "$PRE && @SANDBOX JIT_OPTION_useAOTInterp=true $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-interp-sh = "$PRE && @SANDBOX JIT_OPTION_useAOTInterp=true JIT_OPTION_useAOTSelfHosted=true $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-ics-only = "$PRE && @SANDBOX JIT_OPTION_useAOTICs=true JIT_OPTION_useAOTICHints=false $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+aot-off = "$PRE && @SANDBOX $MC ./mach raptor $RAPTOR --binary @BIN_AOT 1>&2 && $RESULT"
+
+stock = "$PRE && @SANDBOX MOZCONFIG=../frostmonkey/mozconfigs/browser-release.mozconfig ./mach raptor $RAPTOR --binary @BIN_RELEASE 1>&2 && $RESULT"
+
+[figures.bar-chart]
+analysis = "speedometer"
+script = "figures/bar_chart.py"

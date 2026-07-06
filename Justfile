@@ -39,20 +39,22 @@ debug-expr EXPR *FLAGS:
     gdb --args ./jsshell --aot {{FLAGS}} --blinterp-eager --no-baseline -e "{{EXPR}}"
 
 test *ARGS:
-    cd js/src && python3 jit-test/jit_test.py --args="--aot --enforce-aot-ics" ../../jsshell {{ARGS}}
+    cd js/src && python3 jit-test/jit_test.py --args="--aot --aot-ics-enforce" ../../jsshell {{ARGS}}
 
 ##~---- IC Corpus ----~##
 
+# In enforce mode, unseen ICs are dumped to $AOT_ICS_DUMP_MISSING_DIR instead
+# of crashing when $AOT_ICS_KEEP_GOING is set.
 collect-ics FILE:
-    AOT_ICS_LOG_UNSEEN=1 AOT_ICS_DIR=js/src/ics \
-    ./jsshell --aot --enforce-aot-ics -f {{FILE}}
+    AOT_ICS_DUMP_MISSING_DIR=js/src/ics AOT_ICS_KEEP_GOING=1 \
+    ./jsshell --aot --aot-ics-enforce -f {{FILE}}
 
 collect-ics-browser:
-    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTBaseline=true \
     JIT_OPTION_useAOTSelfHosted=true \
     JIT_OPTION_useAOTICs=true \
     JIT_OPTION_enforceAOTICs=true \
-    AOT_ICS_LOG_UNSEEN=1 AOT_ICS_DIR=js/src/ics \
+    AOT_ICS_DUMP_MISSING_DIR=js/src/ics AOT_ICS_KEEP_GOING=1 \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
     ./{{BROWSER_AOT}} --no-remote
 
@@ -91,12 +93,12 @@ view-rolling-diff:
     #git diff 8ded3583f3587f130f1af9 HEAD | delta --side-by-side
 
 get-rolling-diff:
-    git diff 8ded3583f358 HEAD
+    git diff 8ded3583f358
 
 ##~---- Browser ----~##
 
 browser *FLAGS:
-    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTBaseline=true \
     JIT_OPTION_useAOTSelfHosted=true \
     JIT_OPTION_useAOTICs=true \
     {{FLAGS}} \
@@ -105,7 +107,7 @@ browser *FLAGS:
 
 gdb-browser:
     MOZ_CRASHREPORTER_DISABLE=1 \
-    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTBaseline=true \
     JIT_OPTION_useAOTSelfHosted=true \
     JIT_OPTION_useAOTICs=true \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
@@ -116,7 +118,7 @@ debug-browser:
     echo "Content processes will pause at startup. Attach gdb with:"
     echo "  gdb -p <PID>"
     echo ""
-    JIT_OPTION_useAOTInterp=true \
+    JIT_OPTION_useAOTBaseline=true \
     JIT_OPTION_useAOTSelfHosted=true \
     JIT_OPTION_useAOTICs=true \
     MOZ_DISABLE_CONTENT_SANDBOX=1 \
@@ -174,7 +176,7 @@ pgo-select BUDGET=PGO_BUDGET:
         --budget {{BUDGET}}
     # Redump the AOT container from js/src/ics/ into AOTBaseline.S so the
     # next build picks up the new corpus + hints.
-    IONFLAGS=bl-aot ./jsshell --dump-bl-interp --dump-aot-ics --dump-bl-self-hosted -e 'quit(0)'
+    IONFLAGS=bl-aot ./jsshell --aot-dump-baseline --aot-dump-ics --aot-dump-self-hosted -e 'quit(0)'
 
 pgo-full WORKLOAD=PGO_WORKLOAD BUDGET=PGO_BUDGET:
     #!/usr/bin/env bash
