@@ -1,1 +1,0 @@
-ToBool, 1, 1, 2, JSVAL_TYPE_UNDEFINED, 0, , LASTUSED(0) , OP(GuardIsNullOrUndefined) ID(0) OP(LoadBooleanResult) BOOL(0)

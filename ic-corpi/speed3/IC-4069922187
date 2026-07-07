@@ -1,0 +1,1 @@
+ToBool, 1, 1, 2, JSVAL_TYPE_STRING, 0, , LASTUSED(1) , OP(GuardToString) ID(0) OP(LoadStringTruthyResult) ID(0) 

@@ -1,0 +1,1 @@
+GetProp, 1, 2, 5, JSVAL_TYPE_UNKNOWN, 16, STUBFIELD(WeakShape) STUBFIELD(Id) , LASTUSED(4) LASTUSED(3) , OP(GuardToObject) ID(0) OP(GuardShape) ID(0) OFFSET(0) OP(LoadDOMExpandoValue) ID(0) ID(1) OP(GuardNonDoubleType) ID(1) VALUETYPE(JSVAL_TYPE_UNDEFINED) OP(ProxyGetResult) ID(0) OFFSET(1) 

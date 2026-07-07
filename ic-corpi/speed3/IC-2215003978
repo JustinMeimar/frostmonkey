@@ -1,1 +1,0 @@
-UnaryArith, 1, 1, 2, JSVAL_TYPE_UNKNOWN, 0, , LASTUSED(1) , OP(GuardIsNumber) ID(0) OP(LoadDoubleResult) ID(0)

@@ -1,1 +1,0 @@
-GetImport, 0, 1, 2, JSVAL_TYPE_UNKNOWN, 16, STUBFIELD(JSObject) STUBFIELD(RawInt32) , LASTUSED(1) , OP(LoadObject) ID(0) OFFSET(0) OP(LoadFixedSlotResult) ID(0) OFFSET(1)

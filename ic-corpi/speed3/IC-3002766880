@@ -1,1 +1,0 @@
-ToBool, 1, 1, 2, JSVAL_TYPE_OBJECT, 0, , LASTUSED(1) , OP(GuardToObject) ID(0) OP(LoadObjectTruthyResult) ID(0)

@@ -1,0 +1,1 @@
+TypeOfEq, 1, 1, 2, JSVAL_TYPE_STRING, 0, , LASTUSED(0) , OP(GuardNonDoubleType) ID(0) VALUETYPE(JSVAL_TYPE_STRING) OP(LoadBooleanResult) BOOL(1) 

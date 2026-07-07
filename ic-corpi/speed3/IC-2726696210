@@ -1,1 +1,0 @@
-TypeOfEq, 1, 1, 2, JSVAL_TYPE_DOUBLE, 0, , LASTUSED(0) , OP(GuardIsNumber) ID(0) OP(LoadBooleanResult) BOOL(0)

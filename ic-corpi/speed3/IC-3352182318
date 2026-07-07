@@ -1,1 +1,0 @@
-TypeOfEq, 1, 1, 2, JSVAL_TYPE_UNDEFINED, 0, , LASTUSED(0) , OP(GuardNonDoubleType) ID(0) VALUETYPE(JSVAL_TYPE_UNDEFINED) OP(LoadBooleanResult) BOOL(1)

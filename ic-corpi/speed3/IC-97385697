@@ -1,0 +1,1 @@
+Lambda, 0, 0, 2, JSVAL_TYPE_UNKNOWN, 24, STUBFIELD(RawPointer) STUBFIELD(JSObject) STUBFIELD(AllocSite) , , OP(GuardNoAllocationMetadataBuilder) OFFSET(0) OP(NewFunctionCloneResult) OFFSET(1) ALLOCKIND(FUNCTION_EXTENDED) OFFSET(2) 
